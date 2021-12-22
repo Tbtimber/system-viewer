@@ -1,24 +1,8 @@
-
-class MainDisplayController:
-    def __init__(self, model, view):
-        self.model = model
-        self.view = view
-
-    def calculate(self, *args):
-        try:
-            value = float(self.view.feet.get())
-            self.view.meters.set(str(int(0.3048 * value * 10000.0 + 0.5) / 10000.0))
-
-        except ValueError:
-            pass
-
-
-
-"""import threading
+import threading
 import time
 
 
-class App(threading.Thread):
+class AsyncTask(threading.Thread):
     def __init__(self, event_generator, update_event, finish_event):
         threading.Thread.__init__(self)
         self.update_event = update_event
@@ -32,4 +16,21 @@ class App(threading.Thread):
         time.sleep(5)
         print('Throwing event')
         self.event_generator(self.finish_event)
-"""
+
+
+def print_callbackl(*args):
+    print('Callback : ' + str(threading.get_ident()))
+
+
+class MainDisplayController:
+    def __init__(self, model, view):
+        self.model = model
+        self.view = view
+
+    def do_background_task(self):
+        print(self.view)
+        print('Test before sleep and launching test')
+        print_callbackl()
+        self.view.bind('<<AsynCb>>', print_callbackl)
+
+        AsyncTask(self.view.event_generate, None, '<<AsynCb>>')
